@@ -1,0 +1,10 @@
+programa parte1 ()
+/*
+  int -> soma, a, b;
+
+  se a entao soma = a + b;
+
+  % comentario %
+
+  soma = soma - a + b;
+*/
