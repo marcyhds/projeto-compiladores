@@ -38,10 +38,8 @@ int buscarSimbolo(TabelaSimbolos *tabela, char *nomeToken, char *valor)
 {
   for (int i = 0; i < tabela->tamanho; i++)
   {
-    printf("%d busca tabela %s buscado %s\n", i, tabela->tabela[i].valor, valor);
     if (strcmp(tabela->tabela[i].valor, valor) == 0 && strcmp(tabela->tabela[i].nomeToken, nomeToken) == 0)
     {
-      printf("buscar\n");
       return i;
     }
   }
@@ -90,23 +88,23 @@ int tratarLookahead()
   return 1;
 }
 
-Token analisadorLexico(char *nomeArquivo)
+
+Token analisadorLexico(FILE *arquivo, TabelaSimbolos *tabela)
 {
   Token token;
-  strcpy(token.nomeToken, "file_error");
+  // strcpy(token.nomeToken, "file_error");
 
-  FILE *arquivo = abrirArquivo(nomeArquivo);
-  if (arquivo == NULL)
-  {
-    return token;
-  }
-
+  // FILE *arquivo = abrirArquivo(nomeArquivo);
+  // if (arquivo == NULL)
+  // {
+  //   return token;
+  // }
   char proxChar, lexema[100000];
 
   int estadoAtual = 0, lookahead = 0, index = 0;
 
-  TabelaSimbolos tabela;
-  inicializarTabelaSimbolos(&tabela);
+  // TabelaSimbolos tabela;
+  // inicializarTabelaSimbolos(&tabela);
 
   while (!feof(arquivo))
   {
@@ -1187,9 +1185,9 @@ Token analisadorLexico(char *nomeArquivo)
     case 128:
       lookahead = tratarLookahead();
       lexema[strlen(lexema) - 1] = '\0';
-      index = buscarSimbolo(&tabela, "id", lexema);
+      index = buscarSimbolo(tabela, "id", lexema);
       if (index == -1)
-        index = inserirSimbolo(&tabela, "num", lexema);
+        index = inserirSimbolo(tabela, "num", lexema);
 
       lexema[0] = '\0';
       strcpy(token.nomeToken, "num");
@@ -1199,9 +1197,9 @@ Token analisadorLexico(char *nomeArquivo)
     case 129:
       lookahead = tratarLookahead();
       lexema[strlen(lexema) - 1] = '\0';
-      index = buscarSimbolo(&tabela, "id", lexema);
+      index = buscarSimbolo(tabela, "id", lexema);
       if (index == -1)
-        index = inserirSimbolo(&tabela, "num", lexema);
+        index = inserirSimbolo(tabela, "num", lexema);
 
       lexema[0] = '\0';
       strcpy(token.nomeToken, "num");
@@ -1211,9 +1209,9 @@ Token analisadorLexico(char *nomeArquivo)
     case 130:
       lookahead = tratarLookahead();
       lexema[strlen(lexema) - 1] = '\0';
-      index = buscarSimbolo(&tabela, "id", lexema);
+      index = buscarSimbolo(tabela, "id", lexema);
       if (index == -1)
-        index = inserirSimbolo(&tabela, "num", lexema);
+        index = inserirSimbolo(tabela, "num", lexema);
 
       lexema[0] = '\0';
       strcpy(token.nomeToken, "num");
@@ -1235,9 +1233,9 @@ Token analisadorLexico(char *nomeArquivo)
     case 133:
       lookahead = tratarLookahead();
       lexema[strlen(lexema) - 1] = '\0';
-      index = buscarSimbolo(&tabela, "id", lexema);
+      index = buscarSimbolo(tabela, "id", lexema);
       if (index == -1)
-        index = inserirSimbolo(&tabela, "id", lexema);
+        index = inserirSimbolo(tabela, "id", lexema);
 
       lexema[0] = '\0';
       strcpy(token.nomeToken, "id");
