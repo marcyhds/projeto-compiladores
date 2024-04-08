@@ -1297,6 +1297,14 @@ int hash(const char *str)
   return hash % TAMANHO_MAXIMO;
 }
 
+int ehTerminal(char X)
+{
+  if (X == 'id' || X == 'num' || X == '+' || X == '*' || X == '(' || X == ')' || X == 'se' || X == 'senao' || X == 'enquanto' || X == 'repita' || X == 'ate' || X == '<-' || X == '%' || X == '$')
+    return 1;
+  else
+    return 0;
+}
+
 void analisadorSintatico(char *nomeArquivo)
 {
   Pilha P;
@@ -1317,39 +1325,64 @@ void analisadorSintatico(char *nomeArquivo)
   {
     X = P.itens[P.topo];
     int tokenIndex = hash(proxToken.nomeToken);
-    if (X == proxToken.nomeToken)
-    {
-      desempilha(&P);
-      proxToken = analisadorLexico(arquivo, &tabela);
-    }
-    else
-    {
-      // Tabela de análise sintática
-      char tabela[TAMANHO_MAXIMO][TAMANHO_MAXIMO][TAMANHO_MAXIMO];
-      // Preencha a tabela com as produções correspondentes
-      // Exemplo:
-      strcpy(tabela['S']['a'], "aAB");
-      strcpy(tabela['S']['b'], "bBC");
-      strcpy(tabela['A']['c'], "c");
-      strcpy(tabela['B']['d'], "d");
-      strcpy(tabela['C']['e'], "e");
-
-      if (strlen(tabela[X][tokenIndex]) == 0)
+    if (ehTerminal(X))
+      if (X == proxToken.nomeToken)
       {
-        tratarErroSintatico();
+        desempilha(&P);
+        proxToken = analisadorLexico(arquivo, &tabela);
       }
       else
       {
-        trataProducao(X, tabela[X][tokenIndex]);
-        desempilha(&P);
-        int i = strlen(tabela[X][tokenIndex]) - 1;
-        while (i >= 0)
+        char tabela[TAMANHO_MAXIMO][TAMANHO_MAXIMO][TAMANHO_MAXIMO];
+
+        strcpy(tabela['S']['programa'], "id ( ) BLOCO");
+        strcpy(tabela['B']['/*'], "DECLARACOES BLOCO_COMPOSTO");
+        strcpy(tabela['D']['tipo'], "VARIAVEL DECLARACOES");
+        strcpy(tabela['D']['epsilon'], "");
+        strcpy(tabela['C']['COMANDO'], "BLOCO_COMPOSTO");
+        strcpy(tabela['C']['epsilon'], "");
+        strcpy(tabela['V']['tipo'], "tipo LISTAID ; VARIAVEL_COMPOSTA");
+        strcpy(tabela['V']['epsilon'], "");
+        strcpy(tabela['K']['id'], "LISTAID ; VARIAVEL");
+        strcpy(tabela['K']['epsilon'], "");
+        strcpy(tabela['O']['se'], "se SELECAO");
+        strcpy(tabela['O']['enquanto'], "enquanto CONDICAO faca ESCOPO");
+        strcpy(tabela['O']['id'], "id <- EXPRESSAO ;");
+        strcpy(tabela['I']['id'], "id LISTAID_COMPOSTA");
+        strcpy(tabela['L']['id'], ", id LISTAID_COMPOSTA");
+        strcpy(tabela['L']['epsilon'], "");
+        strcpy(tabela['X']['senao'], "senao ESCOPO");
+        strcpy(tabela['X']['epsilon'], "");
+        strcpy(tabela['R']['repita'], "repita ESCOPO ate CONDICAO;");
+        strcpy(tabela['T']['id'], "id <- EXPRESSAO ;");
+        strcpy(tabela['E']['%'], "% TEXTO %");
+        strcpy(tabela['M']['COMANDO'], "COMANDO");
+        strcpy(tabela['M']['BLOCO'], "BLOCO");
+        strcpy(tabela['F']['id'], "EXPRESSAO oprel EXPRESSAO");
+        strcpy(tabela['F']['num'], "EXPRESSAO oprel EXPRESSAO");
+        strcpy(tabela['G']['id'], "TERMO EXPRESSAO_COMPOSTA");
+        strcpy(tabela['G']['num'], "TERMO EXPRESSAO_COMPOSTA");
+        strcpy(tabela['H']['oparit'], "oparit TERMO EXPRESSAO_COMPOSTA");
+        strcpy(tabela['H']['epsilon'], "");
+        strcpy(tabela['Z']['id'], "id");
+        strcpy(tabela['Z']['num'], "num");
+
+        if (strlen(tabela[X][tokenIndex]) == 0)
         {
-          empilha(&P, tabela[X][tokenIndex][i]);
-          i--;
+          tratarErroSintatico();
+        }
+        else
+        {
+          trataProducao(X, tabela[X][tokenIndex]);
+          desempilha(&P);
+          int i = strlen(tabela[X][tokenIndex]) - 1;
+          while (i >= 0)
+          {
+            empilha(&P, tabela[X][tokenIndex][i]);
+            i--;
+          }
         }
       }
-    }
   }
 
   if (strcmp(proxToken.nomeToken, "EOF") != 0)

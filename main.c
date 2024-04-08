@@ -4,16 +4,6 @@
 
 int main()
 {   
-    // char **tabelaProducoes = malloc(5 * sizeof(char *));
-    // for (int i = 0; i < 5; i++) {
-    //     tabelaProducoes[i] = malloc(4 * sizeof(char));
-    // }
-
-    // // Preencha a tabela de análise
-    // tabelaProducoes[0][0] = ' '; // Exemplo, preencha conforme sua tabela real
-    // // ...
-    // tabelaProducoes[4][3] = ' ';
-
     // Token token;
 
     // char *nomeArquivo = "teste.txt";
@@ -30,10 +20,6 @@ int main()
     // }
 
     // fecharArquivo(arquivo);
-    // for (int i = 0; i < 5; i++) {
-    //     free(tabelaProducoes[i]);
-    // }
-    // free(tabelaProducoes);
 
     char *nomeArquivo = "teste.txt";
     analisadorSintatico(nomeArquivo);
